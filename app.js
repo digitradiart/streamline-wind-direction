@@ -47,9 +47,9 @@ function createMap(header) {
     zoom: MAP_ZOOM,
     preferCanvas: true,
   });
-  // "https://tile.openstreetmap.org/{z}/{x}/{y}.png";
-  https: L.tileLayer(
-    "https://tiles.stadiamaps.com/tiles/alidade_satellite/{z}/{x}/{y}{r}.jpg",
+
+  L.tileLayer(
+    "https://tiles.stadiamaps.com/tiles/alidade_smooth_dark/{z}/{x}/{y}{r}.png",
     {
       attribution: "© stadiamaps contributors",
       maxZoom: 18,
