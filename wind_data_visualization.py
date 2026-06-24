@@ -163,173 +163,82 @@ def create_map(output_path, frames, header, lats, lons, max_velocity, animate, i
 
     if animate:
         start_time = frames[0]["time"].replace("T", " ").replace(".000000000", "")
-        velocity_assets = """
-<script src="https://unpkg.com/leaflet-velocity/dist/leaflet-velocity.min.js"></script>
-<style>
-.wind-panel {
-  position: fixed;
-  z-index: 9999;
-  left: 16px;
-  right: 16px;
-  bottom: 16px;
-  max-width: 720px;
-  padding: 10px 12px;
-  background: rgba(255,255,255,0.94);
-  border: 1px solid rgba(0,0,0,0.16);
-  border-radius: 6px;
-  color: #111827;
-  font: 13px/1.35 Arial, sans-serif;
-  box-shadow: 0 1px 6px rgba(0,0,0,0.18);
-}
-.wind-panel__top {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 12px;
-  margin-bottom: 8px;
-}
-.wind-panel__title {
-  font-weight: 700;
-}
-.wind-panel__controls {
-  display: grid;
-  grid-template-columns: 72px minmax(0,1fr) 56px;
-  gap: 10px;
-  align-items: center;
-}
-.wind-panel button {
-  height: 30px;
-  border: 1px solid #9ca3af;
-  border-radius: 5px;
-  background: #fff;
-  color: #111827;
-  cursor: pointer;
-  font: inherit;
-}
-.wind-panel input[type=range] {
-  width: 100%;
-}
-</style>
-"""
-        panel_html = f"""
-<div class="wind-panel">
-  <div class="wind-panel__top">
-    <div class="wind-panel__title">Wind velocity 10 m</div>
-    <div class="wind-panel__time" id="wind-time">{start_time} UTC</div>
-  </div>
-  <div class="wind-panel__controls">
-    <button type="button" id="wind-play">Pause</button>
-    <input type="range" id="wind-slider" min="0" max="{len(frames) - 1}" step="1" value="0">
-    <span id="wind-index">1/{len(frames)}</span>
-  </div>
-</div>
-"""
-        velocity_script = f"""
-window.addEventListener('load', function() {{
-  var map = {map_name};
-  var frames = {frames_json};
-  var header = {header_json};
-  var currentIndex = 0;
-  var playing = true;
-  var timerId = null;
-  var slider = document.getElementById('wind-slider');
-  var playButton = document.getElementById('wind-play');
-  var timeLabel = document.getElementById('wind-time');
-  var indexLabel = document.getElementById('wind-index');
-
-  function frameData(index) {{
-    return [
-      {{header: Object.assign({{}}, header, {{refTime: frames[index].time, parameterNumber: 2, parameterNumberName: 'eastward_wind'}}), data: frames[index].u}},
-      {{header: Object.assign({{}}, header, {{refTime: frames[index].time, parameterNumber: 3, parameterNumberName: 'northward_wind'}}), data: frames[index].v}}
-    ];
-  }}
-
-  var velocityLayer = L.velocityLayer({{
-    data: frameData(0),
-    displayValues: true,
-    displayOptions: {{velocityType: 'Wind', position: 'bottomleft', emptyString: 'No wind data', angleConvention: 'bearingCW', speedUnit: 'm/s'}},
-    minVelocity: 0,
-    maxVelocity: {max_velocity},
-    velocityScale: 0.008,
-    particleAge: 80,
-    particleMultiplier: 0.004,
-    lineWidth: 1.2,
-    frameRate: 24,
-    colorScale: ['#2563eb', '#0891b2', '#16a34a', '#ca8a04', '#dc2626']
-  }});
-  velocityLayer.addTo(map);
-
-  function renderFrame(index) {{
-    currentIndex = index;
-    slider.value = index;
-    indexLabel.textContent = (index + 1) + '/' + frames.length;
-    timeLabel.textContent = frames[index].time.replace('T', ' ').replace('.000000000', '') + ' UTC';
-    if (typeof velocityLayer.setData === 'function') {{
-      velocityLayer.setData(frameData(index));
-    }}
-  }}
-
-  function nextFrame() {{
-    renderFrame((currentIndex + 1) % frames.length);
-  }}
-
-  function startTimer() {{
-    stopTimer();
-    timerId = window.setInterval(nextFrame, {interval_ms});
-  }}
-
-  function stopTimer() {{
-    if (timerId !== null) {{
-      window.clearInterval(timerId);
-      timerId = null;
-    }}
-  }}
-
-  playButton.addEventListener('click', function() {{
-    playing = !playing;
-    playButton.textContent = playing ? 'Pause' : 'Play';
-    if (playing) {{
-      startTimer();
-    }} else {{
-      stopTimer();
-    }}
-  }});
-
-  slider.addEventListener('input', function(event) {{
-    renderFrame(Number(event.target.value));
-  }});
-
-  startTimer();
-}});
-"""
-        m.get_root().header.add_child(Element(velocity_assets))
-        m.get_root().html.add_child(Element(panel_html))
+        velocity_script = (
+            "window.addEventListener('load', function() {\n"
+            "  var map = " + map_name + ";\n"
+            "  var frames = " + frames_json + ";\n"
+            "  var header = " + header_json + ";\n\n"
+            "  function loadLeafletVelocity(callback) {\n"
+            "    var script = document.createElement('script');\n"
+            "    script.src = 'https://unpkg.com/leaflet-velocity/dist/leaflet-velocity.min.js';\n"
+            "    script.onload = callback;\n"
+            "    document.head.appendChild(script);\n"
+            "  }\n\n"
+            "  function frameData(index) {\n"
+            "    return [\n"
+            "      {header: Object.assign({}, header, {refTime: frames[index].time, parameterNumber: 2, parameterNumberName: 'eastward_wind'}), data: frames[index].u},\n"
+            "      {header: Object.assign({}, header, {refTime: frames[index].time, parameterNumber: 3, parameterNumberName: 'northward_wind'}), data: frames[index].v}\n"
+            "    ];\n"
+            "  }\n\n"
+            "  function startAnimation() {\n"
+            "    var currentIndex = 0;\n"
+            "    var velocityLayer = L.velocityLayer({\n"
+            "      data: frameData(0),\n"
+            "      displayValues: true,\n"
+            "      displayOptions: {velocityType: 'Wind', position: 'bottomleft', emptyString: 'No wind data', angleConvention: 'bearingCW', speedUnit: 'm/s'},\n"
+            "      minVelocity: 0,\n"
+            "      maxVelocity: " + str(max_velocity) + ",\n"
+            "      velocityScale: 0.008,\n"
+            "      particleAge: 80,\n"
+            "      particleMultiplier: 0.004,\n"
+            "      lineWidth: 1.2,\n"
+            "      frameRate: 24,\n"
+            "      colorScale: ['#2563eb', '#0891b2', '#16a34a', '#ca8a04', '#dc2626']\n"
+            "    });\n"
+            "    velocityLayer.addTo(map);\n\n"
+            "    function renderFrame(index) {\n"
+            "      velocityLayer.setData(frameData(index));\n"
+            "    }\n\n"
+            "    function nextFrame() {\n"
+            "      currentIndex = (currentIndex + 1) % frames.length;\n"
+            "      renderFrame(currentIndex);\n"
+            "    }\n\n"
+            "    window.setInterval(nextFrame, " + str(interval_ms) + ");\n"
+            "  }\n\n"
+            "  loadLeafletVelocity(startAnimation);\n"
+            "});\n"
+        )
         m.get_root().script.add_child(Element(velocity_script))
     else:
-        velocity_assets = """
-<script src="https://unpkg.com/leaflet-velocity/dist/leaflet-velocity.min.js"></script>
-"""
-        velocity_script = f"""
-window.addEventListener('load', function() {{
-  var map = {map_name};
-  var data = {json.dumps(frames, separators=(',', ':'))};
-  var velocityLayer = L.velocityLayer({{
-    data: data,
-    displayValues: true,
-    displayOptions: {{velocityType: 'Wind', position: 'bottomleft', emptyString: 'No wind data', angleConvention: 'bearingCW', speedUnit: 'm/s'}},
-    minVelocity: 0,
-    maxVelocity: {max_velocity:.2f},
-    velocityScale: 0.008,
-    particleAge: 90,
-    particleMultiplier: 0.004,
-    lineWidth: 1.2,
-    frameRate: 24,
-    colorScale: ['#2563eb', '#0891b2', '#16a34a', '#ca8a04', '#dc2626']
-  }});
-  velocityLayer.addTo(map);
-}});
-"""
-        m.get_root().header.add_child(Element(velocity_assets))
+        velocity_script = (
+            "window.addEventListener('load', function() {\n"
+            "  var map = " + map_name + ";\n"
+            "  var data = " + json.dumps(frames, separators=(',', ':')) + ";\n"
+            "  function loadLeafletVelocity(callback) {\n"
+            "    var script = document.createElement('script');\n"
+            "    script.src = 'https://unpkg.com/leaflet-velocity/dist/leaflet-velocity.min.js';\n"
+            "    script.onload = callback;\n"
+            "    document.head.appendChild(script);\n"
+            "  }\n\n"
+            "  function startLayer() {\n"
+            "    var velocityLayer = L.velocityLayer({\n"
+            "      data: data,\n"
+            "      displayValues: true,\n"
+            "      displayOptions: {velocityType: 'Wind', position: 'bottomleft', emptyString: 'No wind data', angleConvention: 'bearingCW', speedUnit: 'm/s'},\n"
+            "      minVelocity: 0,\n"
+            "      maxVelocity: " + f"{max_velocity:.2f}" + ",\n"
+            "      velocityScale: 0.008,\n"
+            "      particleAge: 90,\n"
+            "      particleMultiplier: 0.004,\n"
+            "      lineWidth: 1.2,\n"
+            "      frameRate: 24,\n"
+            "      colorScale: ['#2563eb', '#0891b2', '#16a34a', '#ca8a04', '#dc2626']\n"
+            "    });\n"
+            "    velocityLayer.addTo(map);\n"
+            "  }\n\n"
+            "  loadLeafletVelocity(startLayer);\n"
+            "});\n"
+        )
         m.get_root().script.add_child(Element(velocity_script))
 
     m.save(output_path)
