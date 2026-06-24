@@ -1,0 +1,66 @@
+html,
+body {
+  width: 100%;
+  height: 100%;
+  margin: 0;
+  padding: 0;
+  font-family:
+    system-ui,
+    -apple-system,
+    BlinkMacSystemFont,
+    "Segoe UI",
+    sans-serif;
+  background: #f2f4f7;
+}
+
+#map {
+  position: absolute;
+  inset: 0;
+}
+
+.toolbar {
+  position: absolute;
+  left: 16px;
+  top: 16px;
+  z-index: 1000;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  background: rgba(255, 255, 255, 0.94);
+  border-radius: 12px;
+  box-shadow: 0 10px 26px rgba(15, 23, 42, 0.12);
+  padding: 10px 14px;
+}
+
+.button {
+  border: none;
+  border-radius: 8px;
+  padding: 8px 14px;
+  background: #2563eb;
+  color: white;
+  cursor: pointer;
+  font-size: 0.95rem;
+}
+
+.button:hover,
+.button:focus-visible {
+  background: #1d4ed8;
+}
+
+.status {
+  font-size: 0.92rem;
+  color: #1f2937;
+}
+
+.error {
+  position: absolute;
+  bottom: 16px;
+  left: 16px;
+  z-index: 1000;
+  background: rgba(239, 68, 68, 0.95);
+  color: white;
+  padding: 10px 14px;
+  border-radius: 10px;
+  box-shadow: 0 10px 26px rgba(15, 23, 42, 0.18);
+  max-width: 320px;
+}
