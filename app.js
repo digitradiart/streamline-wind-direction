@@ -51,7 +51,7 @@ function createMap(header) {
   https: L.tileLayer(
     "https://tiles.stadiamaps.com/tiles/alidade_satellite/{z}/{x}/{y}{r}.jpg",
     {
-      attribution: "© OpenStreetMap contributors",
+      attribution: "© stadiamaps contributors",
       maxZoom: 18,
     },
   ).addTo(map);

@@ -17,3 +17,5 @@ Data notes:
 - `--max-frames` limits animation frames to a lighter subset of the monthly hourly data.
 
 For a heavier dataset, use compressed JSON or increase `--stride` / reduce `--max-frames`.
+
+basemap: [leaflet-extras.github.io/leaflet-providers/preview](https://leaflet-extras.github.io/leaflet-providers/preview/)
