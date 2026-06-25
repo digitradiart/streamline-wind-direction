@@ -1,6 +1,5 @@
 const DATA_URL = "data/velocity.json";
 const MAP_ZOOM = 5;
-const DEFAULT_ANIMATION_INTERVAL = 2400;
 const VELOCITY_OPTIONS = {
   displayValues: true,
   displayOptions: {
@@ -20,9 +19,7 @@ const VELOCITY_OPTIONS = {
 };
 
 let frameIndex = 0;
-let animationTimer = null;
 let velocityLayer = null;
-let animate = false;
 let dataFrames = [];
 let metadata = null;
 
@@ -99,6 +96,27 @@ function updateFrame(map, header, frame) {
   }
 }
 
+function formatFrameTime(value) {
+  if (!value) {
+    return "Unknown time";
+  }
+
+  const date = new Date(value);
+  if (Number.isNaN(date.getTime())) {
+    return value;
+  }
+
+  return date.toLocaleString(undefined, {
+    weekday: "short",
+    year: "numeric",
+    month: "short",
+    day: "numeric",
+    hour: "2-digit",
+    minute: "2-digit",
+    hour12: false,
+  });
+}
+
 function updateToolbar() {
   const timeLabel = document.getElementById("currentTime");
   if (!timeLabel) return;
@@ -107,47 +125,36 @@ function updateToolbar() {
     return;
   }
   const frame = dataFrames[frameIndex];
-  timeLabel.textContent = frame.time
-    ? `Time: ${frame.time}`
+  const timeText = frame.time
+    ? formatFrameTime(frame.time)
     : `Frame ${frameIndex + 1}/${dataFrames.length}`;
+  timeLabel.textContent = frame.time ? `Time: ${timeText}` : timeText;
 }
 
-function stopAnimation() {
-  if (animationTimer) {
-    clearInterval(animationTimer);
-    animationTimer = null;
-    document.getElementById("playPause").textContent = "Play";
+function showFrame(map, header, index) {
+  frameIndex = Math.min(Math.max(index, 0), dataFrames.length - 1);
+  updateFrame(map, header, dataFrames[frameIndex]);
+  updateToolbar();
+}
+
+function showPreviousFrame(map, header) {
+  if (frameIndex > 0) {
+    showFrame(map, header, frameIndex - 1);
   }
 }
 
-function startAnimation(map, header) {
-  if (animationTimer || dataFrames.length <= 1) {
-    return;
-  }
-
-  document.getElementById("playPause").textContent = "Pause";
-  animationTimer = setInterval(() => {
-    frameIndex = (frameIndex + 1) % dataFrames.length;
-    updateFrame(map, header, dataFrames[frameIndex]);
-    updateToolbar();
-  }, DEFAULT_ANIMATION_INTERVAL);
-}
-
-function toggleAnimation(map, header) {
-  if (!dataFrames.length || dataFrames.length === 1) {
-    return;
-  }
-  animate = !animate;
-  if (animate) {
-    startAnimation(map, header);
-  } else {
-    stopAnimation();
+function showNextFrame(map, header) {
+  if (frameIndex < dataFrames.length - 1) {
+    showFrame(map, header, frameIndex + 1);
   }
 }
 
 function setupControls(map, header) {
-  const button = document.getElementById("playPause");
-  button.addEventListener("click", () => toggleAnimation(map, header));
+  const prevButton = document.getElementById("prevFrame");
+  const nextButton = document.getElementById("nextFrame");
+
+  prevButton.addEventListener("click", () => showPreviousFrame(map, header));
+  nextButton.addEventListener("click", () => showNextFrame(map, header));
 }
 
 async function loadVelocityData() {
@@ -173,13 +180,9 @@ async function init() {
     updateToolbar();
     setupControls(map, metadata.header);
 
-    if (dataFrames.length > 1) {
-      animate = true;
-      startAnimation(map, metadata.header);
-    } else {
-      const button = document.getElementById("playPause");
-      button.disabled = true;
-      button.textContent = "No animation";
+    if (dataFrames.length <= 1) {
+      document.getElementById("prevFrame").disabled = true;
+      document.getElementById("nextFrame").disabled = true;
     }
   } catch (error) {
     console.error(error);

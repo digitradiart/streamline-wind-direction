@@ -20,7 +20,7 @@ body {
 
 .toolbar {
   position: absolute;
-  left: 16px;
+  left: 45px;
   top: 16px;
   z-index: 1000;
   display: flex;
