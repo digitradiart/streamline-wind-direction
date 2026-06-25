@@ -13,7 +13,8 @@ const VELOCITY_OPTIONS = {
   // setting velocityScale to 0.008 to make the wind speed more visually appealing
   minVelocity: 0,
   velocityScale: 0.008,
-  particleAge: 280,
+  // setting particleAge to 400 to make the wind particles last longer
+  particleAge: 400,
   particleMultiplier: 0.03,
   lineWidth: 1.3,
   frameRate: 25,
