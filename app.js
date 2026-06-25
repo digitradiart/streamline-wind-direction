@@ -15,7 +15,8 @@ const VELOCITY_OPTIONS = {
   velocityScale: 0.008,
   // setting particleAge to 400 to make the wind particles last longer
   particleAge: 400,
-  particleMultiplier: 0.03,
+  // setting particleMultiplier to 0.02 to make the wind particles more dense
+  particleMultiplier: 0.02,
   lineWidth: 1.3,
   frameRate: 25,
   colorScale: ["#2563eb", "#0891b2", "#16a34a", "#ca8a04", "#dc2626"],
