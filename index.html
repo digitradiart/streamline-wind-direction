@@ -12,10 +12,83 @@
     <link rel="stylesheet" href="styles.css" />
   </head>
   <body>
-    <div class="toolbar">
-      <button id="prevFrame" class="button">Previous</button>
-      <button id="nextFrame" class="button">Next</button>
-      <div class="status" id="currentTime">Loading data…</div>
+    <div class="title-panel">
+      <div class="map-title" id="mapTitle">Wind Streamline Visualization</div>
+      <div class="status" id="currentTime">Loading data...</div>
+    </div>
+    <div class="toolbar" id="toolbar" aria-label="Map controls">
+      <div class="map-controls" aria-label="View controls">
+        <button
+          id="zoomIn"
+          class="icon-button"
+          aria-label="Zoom in"
+          title="Zoom in"
+        >
+          <i data-lucide="plus" aria-hidden="true">+</i>
+        </button>
+        <button
+          id="zoomOut"
+          class="icon-button"
+          aria-label="Zoom out"
+          title="Zoom out"
+        >
+          <i data-lucide="minus" aria-hidden="true">-</i>
+        </button>
+        <button
+          id="resetView"
+          class="icon-button"
+          aria-label="Reset view"
+          title="Reset view"
+        >
+          <i data-lucide="rotate-ccw" aria-hidden="true">&#8634;</i>
+        </button>
+      </div>
+      <div class="toolbar-divider" aria-hidden="true"></div>
+      <div class="frame-controls" aria-label="Frame controls">
+        <button
+          id="prevFrame"
+          class="icon-button"
+          aria-label="Previous frame"
+          title="Previous frame"
+        >
+          <i data-lucide="chevron-left" aria-hidden="true">&#8249;</i>
+        </button>
+        <button
+          id="nextFrame"
+          class="icon-button"
+          aria-label="Next frame"
+          title="Next frame"
+        >
+          <i data-lucide="chevron-right" aria-hidden="true">&#8250;</i>
+        </button>
+      </div>
+      <div class="toolbar-divider" aria-hidden="true"></div>
+      <div class="download-controls" aria-label="Download controls">
+        <button
+          id="downloadImage"
+          class="icon-button"
+          aria-label="Download image"
+          title="Download image"
+        >
+          <i data-lucide="image-down" aria-hidden="true">&#8681;</i>
+        </button>
+        <button
+          id="downloadVideo"
+          class="icon-button"
+          aria-label="Download video"
+          title="Download video"
+        >
+          <i data-lucide="file-video" aria-hidden="true">&#8681;</i>
+        </button>
+        <button
+          id="downloadGif"
+          class="icon-button"
+          aria-label="Download GIF"
+          title="Download GIF"
+        >
+          <i data-lucide="file-down" aria-hidden="true">&#8681;</i>
+        </button>
+      </div>
     </div>
     <div id="map"></div>
 
@@ -24,6 +97,9 @@
       crossorigin=""
     ></script>
     <script src="https://unpkg.com/leaflet-velocity/dist/leaflet-velocity.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/html2canvas@1.4.1/dist/html2canvas.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/gif.js.optimized/dist/gif.js"></script>
+    <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.min.js"></script>
     <script src="app.js"></script>
   </body>
 </html>
