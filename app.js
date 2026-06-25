@@ -1,6 +1,6 @@
 const DATA_URL = "data/velocity.json";
 const MAP_ZOOM = 5;
-const DEFAULT_ANIMATION_INTERVAL = 1200;
+const DEFAULT_ANIMATION_INTERVAL = 2400;
 const VELOCITY_OPTIONS = {
   displayValues: true,
   displayOptions: {
@@ -11,11 +11,11 @@ const VELOCITY_OPTIONS = {
     speedUnit: "m/s",
   },
   minVelocity: 0,
-  velocityScale: 0.035,
-  particleAge: 140,
-  particleMultiplier: 0.04,
+  velocityScale: 0.02,
+  particleAge: 200,
+  particleMultiplier: 0.03,
   lineWidth: 1.3,
-  frameRate: 30,
+  frameRate: 25,
   colorScale: ["#2563eb", "#0891b2", "#16a34a", "#ca8a04", "#dc2626"],
 };
 
@@ -48,10 +48,11 @@ function createMap(header) {
     preferCanvas: true,
   });
 
-  L.tileLayer(
-    "https://tiles.stadiamaps.com/tiles/alidade_smooth_dark/{z}/{x}/{y}{r}.png",
+  const Esri_WorldImagery = L.tileLayer(
+    "https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}",
     {
-      attribution: "© stadiamaps contributors",
+      attribution:
+        "Tiles © Esri — Source: Esri, i-cubed, USDA, USGS, AEX, GeoEye, Getmapping, Aerogrid, IGN, IGP, UPR-EGP, and the GIS User Community",
       maxZoom: 18,
     },
   ).addTo(map);

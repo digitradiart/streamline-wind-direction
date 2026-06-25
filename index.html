@@ -1,21 +1,28 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
-<head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Wind Streamline Visualization</title>
-  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/leaflet@1.9.3/dist/leaflet.css" crossorigin="" />
-  <link rel="stylesheet" href="styles.css" />
-</head>
-<body>
-  <div class="toolbar">
-    <button id="playPause" class="button">Play</button>
-    <div class="status" id="currentTime">Loading data…</div>
-  </div>
-  <div id="map"></div>
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Wind Streamline Visualization</title>
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/npm/leaflet@1.9.3/dist/leaflet.css"
+      crossorigin=""
+    />
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body>
+    <div class="toolbar">
+      <button id="playPause" class="button">Play</button>
+      <div class="status" id="currentTime">Loading data…</div>
+    </div>
+    <div id="map"></div>
 
-  <script src="https://cdn.jsdelivr.net/npm/leaflet@1.9.3/dist/leaflet.js" crossorigin=""></script>
-  <script src="https://unpkg.com/leaflet-velocity/dist/leaflet-velocity.min.js"></script>
-  <script src="app.js"></script>
-</body>
+    <script
+      src="https://cdn.jsdelivr.net/npm/leaflet@1.9.3/dist/leaflet.js"
+      crossorigin=""
+    ></script>
+    <script src="https://unpkg.com/leaflet-velocity/dist/leaflet-velocity.min.js"></script>
+    <script src="app.js"></script>
+  </body>
 </html>
